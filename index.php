@@ -15,6 +15,14 @@ $query = "SELECT u.*,
 $stmt = $conn->prepare($query);
 $stmt->execute();
 $umkm_data = $stmt->fetchAll();
+
+// Statistik produk
+$query_produk = "SELECT COUNT(*) as total FROM produk p 
+                 JOIN umkm_data u ON p.umkm_id = u.id 
+                 WHERE u.status_verifikasi = 'terverifikasi'";
+$stmt_produk = $conn->prepare($query_produk);
+$stmt_produk->execute();
+$total_produk = $stmt_produk->fetch()['total'];
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -23,30 +31,17 @@ $umkm_data = $stmt->fetchAll();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIGAP-UMKM - Sistem Informasi Geografis dan Pemantauan UMKM Kota Semarang</title>
     
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
-    
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     
     <style>
-        * {
-            font-family: 'Poppins', sans-serif;
-        }
+        * { font-family: 'Poppins', sans-serif; }
+        body { overflow-x: hidden; }
         
-        body {
-            overflow-x: hidden;
-        }
-        
-        /* Navbar Styles */
         .navbar-custom {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             padding: 1rem 0;
@@ -87,7 +82,6 @@ $umkm_data = $stmt->fetchAll();
             box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
         }
         
-        /* User Dropdown */
         .user-avatar {
             width: 40px;
             height: 40px;
@@ -114,34 +108,13 @@ $umkm_data = $stmt->fetchAll();
             font-size: 0.75rem;
             opacity: 0.8;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
         
         .user-dropdown {
             border-radius: 15px;
-            border: none;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            padding: 0.5rem 0;
-            min-width: 220px;
         }
         
-        .user-dropdown .dropdown-item {
-            padding: 0.75rem 1.5rem;
-            transition: all 0.3s;
-            font-size: 0.9rem;
-        }
-        
-        .user-dropdown .dropdown-item:hover {
-            background: rgba(102, 126, 234, 0.1);
-            color: #667eea;
-        }
-        
-        .user-dropdown .dropdown-item.text-danger:hover {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-        }
-        
-        /* Hero Section */
         .hero-section {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -157,7 +130,7 @@ $umkm_data = $stmt->fetchAll();
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="none"/><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></svg>');
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></svg>');
             background-size: 50px 50px;
         }
         
@@ -207,7 +180,6 @@ $umkm_data = $stmt->fetchAll();
             margin-top: 0.5rem;
         }
         
-        /* Map Section */
         .map-section {
             padding: 4rem 0;
             background: #f8f9fa;
@@ -233,7 +205,6 @@ $umkm_data = $stmt->fetchAll();
             overflow: hidden;
         }
         
-        /* Custom Popup Styles */
         .custom-popup {
             max-width: 300px;
         }
@@ -261,7 +232,6 @@ $umkm_data = $stmt->fetchAll();
             margin: 0.25rem 0;
         }
         
-        /* Footer */
         .footer {
             background: #2d3748;
             color: white;
@@ -303,6 +273,9 @@ $umkm_data = $stmt->fetchAll();
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#peta">Peta UMKM</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="katalog.php">Katalog Produk</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#tentang">Tentang</a>
@@ -371,6 +344,9 @@ $umkm_data = $stmt->fetchAll();
                     <a href="#peta" class="btn btn-light btn-lg rounded-pill px-4 me-3">
                         <i class="bi bi-map me-2"></i>Jelajahi Peta
                     </a>
+                    <a href="katalog.php" class="btn btn-outline-light btn-lg rounded-pill px-4 me-3">
+                        <i class="bi bi-cart me-2"></i>Lihat Produk
+                    </a>
                     <a href="auth/register.php" class="btn btn-outline-light btn-lg rounded-pill px-4">
                         <i class="bi bi-person-plus me-2"></i>Daftar UMKM
                     </a>
@@ -387,12 +363,7 @@ $umkm_data = $stmt->fetchAll();
                         <div class="col-6">
                             <div class="stats-card">
                                 <i class="bi bi-box-seam fs-1 mb-2"></i>
-                                <span class="stats-number">
-                                    <?php
-                                    $total_produk = array_sum(array_column($umkm_data, 'jumlah_produk'));
-                                    echo $total_produk;
-                                    ?>
-                                </span>
+                                <span class="stats-number"><?= $total_produk ?></span>
                                 <span class="stats-label">Produk Tersedia</span>
                             </div>
                         </div>
@@ -489,45 +460,36 @@ $umkm_data = $stmt->fetchAll();
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     
     <script>
-        // Inisialisasi Peta (centered di Semarang)
         var map = L.map('map').setView([-6.9825, 110.4094], 13);
         
-        // Tile Layer (OpenStreetMap)
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
             maxZoom: 19
         }).addTo(map);
         
-        // Marker Cluster Group
         var markers = L.markerClusterGroup({
             spiderfyOnMaxZoom: true,
             showCoverageOnHover: true,
             zoomToBoundsOnClick: true
         });
         
-        // Data UMKM dari PHP
         var umkmData = <?= json_encode($umkm_data) ?>;
         
-        // Custom Icon
         var customIcon = L.divIcon({
             html: '<i class="bi bi-shop-window fs-4 text-primary"></i>',
             className: 'custom-marker',
             iconSize: [30, 30]
         });
         
-        // Tambahkan Marker untuk setiap UMKM
         umkmData.forEach(function(umkm) {
             var popupContent = `
                 <div class="custom-popup">
-                    ${umkm.foto_usaha ? `<img src="uploads/${umkm.foto_usaha}" class="img-fluid rounded mb-2" alt="${umkm.nama_usaha}">` : ''}
+                    ${umkm.foto_usaha ? `<img src="uploads/umkm_profile/${umkm.foto_usaha}" class="img-fluid rounded mb-2" alt="${umkm.nama_usaha}">` : ''}
                     <div class="popup-title">${umkm.nama_usaha}</div>
                     <span class="popup-category">${umkm.kategori}</span>
                     <div class="popup-info">
@@ -540,6 +502,7 @@ $umkm_data = $stmt->fetchAll();
                         <i class="bi bi-box-seam-fill text-success"></i> ${umkm.jumlah_produk} Produk
                     </div>
                     ${umkm.deskripsi ? `<p class="mt-2 mb-0 text-muted small">${umkm.deskripsi}</p>` : ''}
+                    ${umkm.no_telepon ? `<a href="https://wa.me/62${umkm.no_telepon.replace(/^0/, '')}" target="_blank" class="btn btn-sm btn-success w-100 mt-2"><i class="bi bi-whatsapp me-1"></i>Hubungi</a>` : ''}
                 </div>
             `;
             
@@ -551,7 +514,6 @@ $umkm_data = $stmt->fetchAll();
         
         map.addLayer(markers);
         
-        // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();

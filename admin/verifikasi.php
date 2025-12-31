@@ -216,6 +216,21 @@ $stats = [
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="users.php">
+                    <i class="bi bi-people me-2"></i>Management User
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="umkm-management.php">
+                    <i class="bi bi-shop-window me-2"></i>Management UMKM
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="settings.php">
+                    <i class="bi bi-gear me-2"></i>Pengaturan
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="../index.php">
                     <i class="bi bi-globe me-2"></i>Lihat Website
                 </a>
@@ -342,7 +357,7 @@ $stats = [
                         <tr>
                             <td>
                                 <?php if ($umkm['foto_usaha']): ?>
-                                    <img src="../uploads/<?= htmlspecialchars($umkm['foto_usaha']) ?>" 
+                                    <img src="../uploads/umkm_profile/<?= htmlspecialchars($umkm['foto_usaha']) ?>" 
                                          class="umkm-image" alt="<?= htmlspecialchars($umkm['nama_usaha']) ?>">
                                 <?php else: ?>
                                     <div class="umkm-image bg-secondary d-flex align-items-center justify-content-center text-white">

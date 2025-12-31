@@ -333,8 +333,23 @@ $kategori_data = $stmt->fetchAll();
                     <i class="bi bi-check-circle me-2"></i>Verifikasi UMKM
                 </a>
             </li>
+                        <li class="nav-item">
+                <a class="nav-link" href="users.php">
+                    <i class="bi bi-people me-2"></i>Management User
+                </a>
+            </li>
             <li class="nav-item">
-                <a class="nav-link" href="../index.php" target="_blank">
+                <a class="nav-link" href="umkm-management.php">
+                    <i class="bi bi-shop-window me-2"></i>Management UMKM
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="settings.php">
+                    <i class="bi bi-gear me-2"></i>Pengaturan
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="../index.php">
                     <i class="bi bi-globe me-2"></i>Lihat Website
                 </a>
             </li>
@@ -467,7 +482,7 @@ $kategori_data = $stmt->fetchAll();
                         <?php foreach ($recent_umkm as $umkm): ?>
                             <div class="umkm-item">
                                 <?php if ($umkm['foto_usaha']): ?>
-                                    <img src="../uploads/<?= htmlspecialchars($umkm['foto_usaha']) ?>" 
+                                    <img src="../uploads/umkm_profile/<?= htmlspecialchars($umkm['foto_usaha']) ?>" 
                                          class="umkm-avatar" alt="<?= htmlspecialchars($umkm['nama_usaha']) ?>">
                                 <?php else: ?>
                                     <div class="umkm-placeholder">

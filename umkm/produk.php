@@ -57,17 +57,36 @@ if (isset($_GET['delete'])) {
 // Handle Add/Edit
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nama_produk = sanitize($_POST['nama_produk']);
+    $deskripsi = sanitize($_POST['deskripsi']);
     $harga = floatval($_POST['harga']);
     $produk_id = isset($_POST['produk_id']) ? (int)$_POST['produk_id'] : 0;
     
     // Handle foto
     $foto_produk = '';
+    $foto_lama = '';
+    
+    if ($produk_id > 0) {
+        // Ambil foto lama untuk dihapus
+        $query = "SELECT foto_produk FROM produk WHERE id = :id AND umkm_id = :umkm_id";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':id', $produk_id);
+        $stmt->bindParam(':umkm_id', $umkm['id']);
+        $stmt->execute();
+        $produk_data = $stmt->fetch();
+        $foto_lama = $produk_data ? $produk_data['foto_produk'] : '';
+    }
+    
     if (isset($_FILES['foto_produk']) && $_FILES['foto_produk']['error'] === UPLOAD_ERR_OK) {
         $allowed = ['jpg', 'jpeg', 'png', 'gif'];
         $filename = $_FILES['foto_produk']['name'];
         $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
         
         if (in_array($ext, $allowed)) {
+            // Hapus foto lama jika ada
+            if ($foto_lama && file_exists("../uploads/produk/" . $foto_lama)) {
+                unlink("../uploads/produk/" . $foto_lama);
+            }
+            
             // Create folder if not exists
             if (!is_dir('../uploads/produk')) {
                 mkdir('../uploads/produk', 0777, true);
@@ -85,11 +104,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         if ($produk_id > 0) {
             // Update
-            $query = "UPDATE produk SET nama_produk = :nama_produk, harga = :harga" . 
+            $query = "UPDATE produk SET nama_produk = :nama_produk, deskripsi = :deskripsi, harga = :harga" . 
                      ($foto_produk ? ", foto_produk = :foto_produk" : "") . 
                      " WHERE id = :id AND umkm_id = :umkm_id";
             $stmt = $conn->prepare($query);
             $stmt->bindParam(':nama_produk', $nama_produk);
+            $stmt->bindParam(':deskripsi', $deskripsi);
             $stmt->bindParam(':harga', $harga);
             if ($foto_produk) $stmt->bindParam(':foto_produk', $foto_produk);
             $stmt->bindParam(':id', $produk_id);
@@ -99,11 +119,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $success = 'Produk berhasil diperbarui!';
         } else {
             // Insert
-            $query = "INSERT INTO produk (umkm_id, nama_produk, harga, foto_produk) 
-                      VALUES (:umkm_id, :nama_produk, :harga, :foto_produk)";
+            $query = "INSERT INTO produk (umkm_id, nama_produk, deskripsi, harga, foto_produk) 
+                      VALUES (:umkm_id, :nama_produk, :deskripsi, :harga, :foto_produk)";
             $stmt = $conn->prepare($query);
             $stmt->bindParam(':umkm_id', $umkm['id']);
             $stmt->bindParam(':nama_produk', $nama_produk);
+            $stmt->bindParam(':deskripsi', $deskripsi);
             $stmt->bindParam(':harga', $harga);
             $stmt->bindParam(':foto_produk', $foto_produk);
             $stmt->execute();
