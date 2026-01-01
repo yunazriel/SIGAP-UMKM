@@ -29,10 +29,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             if ($user = $stmt->fetch()) {
                 if (password_verify($password, $user['password'])) {
-                    // Login berhasil
+                    // ⭐ Set SEMUA session yang dibutuhkan
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $user['username'];
+                    $_SESSION['email'] = $user['email'];
                     $_SESSION['role'] = $user['role'];
+                    $_SESSION['foto_profil'] = $user['foto_profil'];
+                    $_SESSION['no_telepon'] = $user['no_telepon'];
                     
                     // Redirect sesuai role
                     $redirect = ($user['role'] === 'admin') ? '../admin/index.php' : '../umkm/index.php';
