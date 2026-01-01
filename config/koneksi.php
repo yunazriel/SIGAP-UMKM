@@ -62,6 +62,35 @@ function requireAdmin() {
     }
 }
 
+// Function untuk refresh session data dari database
+function refreshUserSession() {
+    if (isset($_SESSION['user_id'])) {
+        $database = new Database();
+        $conn = $database->getConnection();
+        
+        try {
+            $query = "SELECT id, username, email, role, foto_profil, no_telepon FROM users WHERE id = :id LIMIT 1";
+            $stmt = $conn->prepare($query);
+            $stmt->bindParam(':id', $_SESSION['user_id']);
+            $stmt->execute();
+            
+            if ($stmt->rowCount() > 0) {
+                $user = $stmt->fetch();
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['email'] = $user['email'];
+                $_SESSION['role'] = $user['role'];
+                $_SESSION['foto_profil'] = $user['foto_profil'];
+                $_SESSION['no_telepon'] = $user['no_telepon'];
+                return true;
+            }
+        } catch (PDOException $e) {
+            // Silent error, jangan ganggu flow
+            return false;
+        }
+    }
+    return false;
+}
+
 // Start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
