@@ -60,30 +60,6 @@ $kategori_list = $stmt_kategori->fetchAll();
         * { font-family: 'Poppins', sans-serif; }
         body { background: #f8f9fa; }
         
-        .navbar-custom {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 1rem 0;
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
-        }
-        
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: white !important;
-        }
-        
-        .nav-link {
-            color: rgba(255, 255, 255, 0.9) !important;
-            font-weight: 500;
-            margin: 0 0.5rem;
-            transition: all 0.3s;
-        }
-        
-        .nav-link:hover {
-            color: white !important;
-            transform: translateY(-2px);
-        }
-        
         .hero-section {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -268,57 +244,7 @@ $kategori_list = $stmt_kategori->fetchAll();
 <body>
     
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="index.php">
-                <i class="bi bi-geo-alt-fill me-2"></i>SIGAP-UMKM
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php">Beranda</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.php#peta">Peta UMKM</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="katalog.php">Katalog Produk</a>
-                    </li>
-                    
-                    <?php if (isLoggedIn()): ?>
-                        <li class="nav-item dropdown ms-3">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" 
-                               role="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-person-circle me-2"></i><?= htmlspecialchars($_SESSION['username']) ?>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li>
-                                    <a class="dropdown-item" href="<?= isAdmin() ? 'admin/index.php' : 'umkm/index.php' ?>">
-                                        <i class="bi bi-speedometer2 me-2"></i>Dashboard
-                                    </a>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <a class="dropdown-item text-danger" href="auth/logout.php">
-                                        <i class="bi bi-box-arrow-right me-2"></i>Logout
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    <?php else: ?>
-                        <li class="nav-item ms-3">
-                            <a href="auth/login.php" class="btn btn-light rounded-pill px-4">
-                                <i class="bi bi-box-arrow-in-right me-2"></i>Login
-                            </a>
-                        </li>
-                    <?php endif; ?>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <?php include './components/navbar.php'; ?>
     
     <!-- Hero Section -->
     <section class="hero-section">
@@ -463,31 +389,7 @@ $kategori_list = $stmt_kategori->fetchAll();
     </div>
     
     <!-- Footer -->
-    <footer style="background: #2d3748; color: white; padding: 3rem 0;">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <h5><i class="bi bi-geo-alt-fill me-2"></i>SIGAP-UMKM</h5>
-                    <p class="text-white-50">Platform UMKM Kota Semarang</p>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <h5>Link</h5>
-                    <p><a href="index.php" class="text-white-50 text-decoration-none">Beranda</a></p>
-                    <p><a href="katalog.php" class="text-white-50 text-decoration-none">Katalog Produk</a></p>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <h5>Kontak</h5>
-                    <p class="text-white-50">
-                        <i class="bi bi-envelope me-2"></i>info@sigap-umkm.semarang.go.id
-                    </p>
-                </div>
-            </div>
-            <hr class="my-4 bg-white opacity-25">
-            <div class="text-center text-white-50">
-                <p class="mb-0">&copy; 2024 SIGAP-UMKM Kota Semarang</p>
-            </div>
-        </div>
-    </footer>
+    <?php include './components/footer.php'; ?>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
