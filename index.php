@@ -42,79 +42,6 @@ $total_produk = $stmt_produk->fetch()['total'];
         * { font-family: 'Poppins', sans-serif; }
         body { overflow-x: hidden; }
         
-        .navbar-custom {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 1rem 0;
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
-        }
-        
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: white !important;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .nav-link {
-            color: rgba(255, 255, 255, 0.9) !important;
-            font-weight: 500;
-            margin: 0 0.5rem;
-            transition: all 0.3s;
-        }
-        
-        .nav-link:hover {
-            color: white !important;
-            transform: translateY(-2px);
-        }
-        
-        .btn-login {
-            background: white;
-            color: #667eea;
-            font-weight: 600;
-            padding: 0.5rem 1.5rem;
-            border-radius: 25px;
-            transition: all 0.3s;
-        }
-        
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
-        }
-        
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #667eea;
-            font-size: 1.5rem;
-        }
-        
-        .user-info {
-            text-align: left;
-            line-height: 1.2;
-        }
-        
-        .user-name {
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-        
-        .user-role {
-            font-size: 0.75rem;
-            opacity: 0.8;
-            text-transform: uppercase;
-        }
-        
-        .user-dropdown {
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-        
         .hero-section {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -231,105 +158,12 @@ $total_produk = $stmt_produk->fetch()['total'];
             color: #4a5568;
             margin: 0.25rem 0;
         }
-        
-        .footer {
-            background: #2d3748;
-            color: white;
-            padding: 3rem 0 1.5rem;
-            margin-top: 4rem;
-        }
-        
-        .footer h5 {
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-        }
-        
-        .footer a {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .footer a:hover {
-            color: white;
-        }
     </style>
 </head>
 <body>
     
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="index.php">
-                <i class="bi bi-geo-alt-fill me-2"></i>SIGAP-UMKM
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#beranda">Beranda</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#peta">Peta UMKM</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="katalog.php">Katalog Produk</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#tentang">Tentang</a>
-                    </li>
-                    
-                    <?php if (isLoggedIn()): ?>
-                        <li class="nav-item dropdown ms-3">
-                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" 
-                               role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <div class="user-avatar me-2">
-                                    <i class="bi bi-person-circle"></i>
-                                </div>
-                                <div class="user-info">
-                                    <div class="user-name"><?= htmlspecialchars($_SESSION['username']) ?></div>
-                                    <div class="user-role"><?= ucfirst($_SESSION['role']) ?></div>
-                                </div>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end user-dropdown" aria-labelledby="userDropdown">
-                                <li>
-                                    <a class="dropdown-item" href="<?= isAdmin() ? 'admin/index.php' : 'umkm/index.php' ?>">
-                                        <i class="bi bi-speedometer2 me-2"></i>Dashboard
-                                    </a>
-                                </li>
-                                <?php if (!isAdmin()): ?>
-                                <li>
-                                    <a class="dropdown-item" href="umkm/profil.php">
-                                        <i class="bi bi-person me-2"></i>Profil UMKM
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="umkm/produk.php">
-                                        <i class="bi bi-box-seam me-2"></i>Kelola Produk
-                                    </a>
-                                </li>
-                                <?php endif; ?>
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <a class="dropdown-item text-danger" href="auth/logout.php">
-                                        <i class="bi bi-box-arrow-right me-2"></i>Logout
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    <?php else: ?>
-                        <li class="nav-item ms-3">
-                            <a href="auth/login.php" class="btn btn-login">
-                                <i class="bi bi-box-arrow-in-right me-2"></i>Login
-                            </a>
-                        </li>
-                    <?php endif; ?>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <?php include './components/navbar.php'; ?>
 
     <!-- Hero Section -->
     <section id="beranda" class="hero-section">
@@ -426,39 +260,7 @@ $total_produk = $stmt_produk->fetch()['total'];
     </section>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 mb-4 mb-lg-0">
-                    <h5><i class="bi bi-geo-alt-fill me-2"></i>SIGAP-UMKM</h5>
-                    <p class="text-white-50">Sistem Informasi Geografis dan Pemantauan UMKM Kota Semarang</p>
-                </div>
-                <div class="col-lg-4 mb-4 mb-lg-0">
-                    <h5>Kontak</h5>
-                    <p class="mb-1">
-                        <i class="bi bi-envelope me-2"></i>
-                        <a href="mailto:info@sigap-umkm.semarang.go.id">info@sigap-umkm.semarang.go.id</a>
-                    </p>
-                    <p>
-                        <i class="bi bi-telephone me-2"></i>
-                        <a href="tel:+622483456789">(024) 8345 6789</a>
-                    </p>
-                </div>
-                <div class="col-lg-4">
-                    <h5>Alamat</h5>
-                    <p class="text-white-50">
-                        <i class="bi bi-building me-2"></i>
-                        Pemkot Semarang<br>
-                        Jl. Pemuda No. 148, Semarang
-                    </p>
-                </div>
-            </div>
-            <hr class="my-4 bg-white opacity-25">
-            <div class="text-center text-white-50">
-                <p class="mb-0">&copy; 2024 SIGAP-UMKM Kota Semarang. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
+    <?php include './components/footer.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
