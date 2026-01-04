@@ -304,7 +304,7 @@ $total_produk = $stmt_produk->fetch()['total'];
                         <i class="bi bi-box-seam-fill text-success"></i> ${umkm.jumlah_produk} Produk
                     </div>
                     ${umkm.deskripsi ? `<p class="mt-2 mb-0 text-muted small">${umkm.deskripsi}</p>` : ''}
-                    ${umkm.no_telepon ? `<a href="https://wa.me/62${umkm.no_telepon.replace(/^0/, '')}" target="_blank" class="btn btn-sm btn-success w-100 mt-2"><i class="bi bi-whatsapp me-1"></i>Hubungi</a>` : ''}
+                    ${umkm.no_telepon ? `<a href="https://wa.me/62${umkm.no_telepon.replace(/^0/, '')}" target="_blank" class="btn btn-success w-100 mt-2 text-light"><i class="bi bi-whatsapp me-1"></i>Hubungi</a>` : ''}
                 </div>
             `;
             
