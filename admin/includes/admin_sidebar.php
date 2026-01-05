@@ -20,13 +20,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link <?= $current_page == 'users.php' ? 'active' : '' ?>" href="users.php">
-                <i class="bi bi-people me-2"></i>Management User
+            <a class="nav-link <?= $current_page == 'umkm-management.php' ? 'active' : '' ?>" href="umkm-management.php">
+                <i class="bi bi-shop-window me-2"></i>Management UMKM
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link <?= $current_page == 'umkm-management.php' ? 'active' : '' ?>" href="umkm-management.php">
-                <i class="bi bi-shop-window me-2"></i>Management UMKM
+            <a class="nav-link <?= $current_page == 'users.php' ? 'active' : '' ?>" href="users.php">
+                <i class="bi bi-people me-2"></i>Management User
             </a>
         </li>
         <li class="nav-item">

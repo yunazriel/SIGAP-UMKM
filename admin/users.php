@@ -9,6 +9,44 @@ $conn = $database->getConnection();
 $success = '';
 $error = '';
 
+// Handle Update User (Role, Username, No Telepon)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_user'])) {
+    $user_id = (int)$_POST['user_id'];
+    $username = trim($_POST['username']);
+    $role = $_POST['role'];
+    $no_telepon = trim($_POST['no_telepon']);
+    
+    if (empty($username)) {
+        $error = 'Username tidak boleh kosong!';
+    } else {
+        try {
+            // Cek apakah username sudah digunakan user lain
+            $query = "SELECT id FROM users WHERE username = :username AND id != :id";
+            $stmt = $conn->prepare($query);
+            $stmt->bindParam(':username', $username);
+            $stmt->bindParam(':id', $user_id);
+            $stmt->execute();
+            
+            if ($stmt->fetch()) {
+                $error = 'Username sudah digunakan user lain!';
+            } else {
+                $query = "UPDATE users SET username = :username, role = :role, no_telepon = :no_telepon WHERE id = :id";
+                $stmt = $conn->prepare($query);
+                $stmt->bindParam(':username', $username);
+                $stmt->bindParam(':role', $role);
+                $stmt->bindParam(':no_telepon', $no_telepon);
+                $stmt->bindParam(':id', $user_id);
+                
+                if ($stmt->execute()) {
+                    $success = 'Data user berhasil diupdate!';
+                }
+            }
+        } catch (PDOException $e) {
+            $error = 'Gagal update user: ' . $e->getMessage();
+        }
+    }
+}
+
 // Handle Reset Password oleh Admin
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reset_password'])) {
     $user_id = (int)$_POST['user_id'];
@@ -183,6 +221,16 @@ $stats = [
             border-radius: 20px;
             font-weight: 500;
         }
+        
+        .modal-content {
+            border-radius: 20px;
+            border: none;
+        }
+        
+        .modal-header {
+            border-radius: 20px 20px 0 0;
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -328,30 +376,98 @@ $stats = [
                                 <small><?= date('d M Y', strtotime($u['created_at'])) ?></small>
                             </td>
                             <td>
-                                <?php if ($u['id'] != $_SESSION['user_id']): ?>
-                                    <div class="btn-group" role="group">
-                                        <button class="btn btn-sm btn-outline-warning" 
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#resetModal<?= $u['id'] ?>">
-                                            <i class="bi bi-key"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#deleteModal<?= $u['id'] ?>">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
-                                <?php else: ?>
-                                    <span class="text-muted">-</span>
-                                <?php endif; ?>
+                                <div class="btn-group" role="group">
+                                    <button class="btn btn-sm btn-outline-primary" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#editModal<?= $u['id'] ?>"
+                                            title="Edit User">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <?php if ($u['id'] != $_SESSION['user_id']): ?>
+                                    <button class="btn btn-sm btn-outline-warning" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#resetModal<?= $u['id'] ?>"
+                                            title="Reset Password">
+                                        <i class="bi bi-key"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal<?= $u['id'] ?>"
+                                            title="Hapus User">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                    <?php endif; ?>
+                                </div>
                             </td>
                         </tr>
+                        
+                        <!-- Edit User Modal -->
+                        <div class="modal fade" id="editModal<?= $u['id'] ?>" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title">
+                                            <i class="bi bi-pencil me-2"></i>Edit User
+                                        </h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <form method="POST">
+                                        <div class="modal-body p-4">
+                                            <input type="hidden" name="user_id" value="<?= $u['id'] ?>">
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">
+                                                    <i class="bi bi-person me-1"></i>Username
+                                                </label>
+                                                <input type="text" name="username" class="form-control" 
+                                                       value="<?= htmlspecialchars($u['username']) ?>" 
+                                                       required placeholder="Masukkan username">
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">
+                                                    <i class="bi bi-shield-check me-1"></i>Role
+                                                </label>
+                                                <select name="role" class="form-select" required>
+                                                    <option value="umkm" <?= $u['role'] === 'umkm' ? 'selected' : '' ?>>UMKM</option>
+                                                    <option value="admin" <?= $u['role'] === 'admin' ? 'selected' : '' ?>>Admin</option>
+                                                </select>
+                                                <small class="text-muted">
+                                                    <i class="bi bi-info-circle me-1"></i>
+                                                    Ubah role dengan hati-hati
+                                                </small>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">
+                                                    <i class="bi bi-telephone me-1"></i>No. Telepon
+                                                </label>
+                                                <input type="text" name="no_telepon" class="form-control" 
+                                                       value="<?= htmlspecialchars($u['no_telepon'] ?? '') ?>" 
+                                                       placeholder="Contoh: 081234567890">
+                                            </div>
+                                            
+                                            <div class="alert alert-info">
+                                                <i class="bi bi-info-circle me-2"></i>
+                                                <small>Password tidak berubah. Gunakan tombol "Reset Password" untuk mengubah password.</small>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                            <button type="submit" name="update_user" class="btn btn-primary">
+                                                <i class="bi bi-check-circle me-2"></i>Simpan Perubahan
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                         
                         <!-- Reset Password Modal -->
                         <div class="modal fade" id="resetModal<?= $u['id'] ?>" tabindex="-1">
                             <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content" style="border-radius: 20px;">
-                                    <div class="modal-header bg-warning text-white" style="border-radius: 20px 20px 0 0;">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-warning text-white">
                                         <h5 class="modal-title">
                                             <i class="bi bi-key me-2"></i>Reset Password
                                         </h5>
@@ -384,8 +500,8 @@ $stats = [
                         <!-- Delete Modal -->
                         <div class="modal fade" id="deleteModal<?= $u['id'] ?>" tabindex="-1">
                             <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content" style="border-radius: 20px;">
-                                    <div class="modal-header bg-danger text-white" style="border-radius: 20px 20px 0 0;">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-danger text-white">
                                         <h5 class="modal-title">
                                             <i class="bi bi-trash me-2"></i>Hapus User
                                         </h5>

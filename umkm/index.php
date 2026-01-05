@@ -328,7 +328,7 @@ $stats = [
                     
                     <?php if ($umkm['foto_usaha']): ?>
                         <div class="mb-3">
-                            <img src="../uploads/<?= htmlspecialchars($umkm['foto_usaha']) ?>" 
+                            <img src="../uploads/umkm_profile/<?= htmlspecialchars($umkm['foto_usaha']) ?>" 
                                  class="img-fluid rounded-3" alt="<?= htmlspecialchars($umkm['nama_usaha']) ?>">
                         </div>
                     <?php endif; ?>

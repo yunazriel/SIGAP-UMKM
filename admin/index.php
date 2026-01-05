@@ -3,6 +3,9 @@
 require_once '../config/koneksi.php';
 requireAdmin();
 
+// Set timezone ke Waktu Indonesia Barat (WIB)
+date_default_timezone_set('Asia/Jakarta');
+
 $database = new Database();
 $conn = $database->getConnection();
 
@@ -71,6 +74,25 @@ $query = "SELECT kategori, COUNT(*) as jumlah
 $stmt = $conn->prepare($query);
 $stmt->execute();
 $kategori_data = $stmt->fetchAll();
+
+// Fungsi format rupiah Indonesia
+function formatRupiah($angka) {
+    if ($angka >= 1000000000) {
+        // Milyar
+        $hasil = number_format($angka / 1000000000, 1, ',', '.');
+        return 'Rp ' . $hasil . ' Miliar';
+    } elseif ($angka >= 1000000) {
+        // Juta
+        $hasil = number_format($angka / 1000000, 1, ',', '.');
+        return 'Rp ' . $hasil . ' Juta';
+    } elseif ($angka >= 1000) {
+        // Ribu
+        $hasil = number_format($angka / 1000, 0, ',', '.');
+        return 'Rp ' . $hasil . ' Ribu';
+    } else {
+        return 'Rp ' . number_format($angka, 0, ',', '.');
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -147,6 +169,10 @@ $kategori_data = $stmt->fetchAll();
             font-weight: 700;
             color: #2d3748;
             margin: 0;
+        }
+        
+        .stats-number.small-text {
+            font-size: 1.5rem;
         }
         
         .stats-label {
@@ -267,14 +293,10 @@ $kategori_data = $stmt->fetchAll();
     </style>
 </head>
 <body>
-    
     <!-- Sidebar -->
     <?php include './includes/admin_sidebar.php'; ?>
     
-    <!-- Main Content -->
     <div class="content-wrapper">
-        
-        <!-- Page Header -->
         <div class="page-header">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
@@ -335,7 +357,7 @@ $kategori_data = $stmt->fetchAll();
                     <div class="stats-icon bg-success bg-opacity-10 text-success">
                         <i class="bi bi-cash-stack"></i>
                     </div>
-                    <h2 class="stats-number">Rp <?= number_format($stats['total_omzet'] / 1000000, 1) ?>M</h2>
+                    <h2 class="stats-number small-text"><?= formatRupiah($stats['total_omzet']) ?></h2>
                     <p class="stats-label">Total Omzet Bulanan</p>
                 </div>
             </div>

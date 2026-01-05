@@ -399,28 +399,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_password'])) {
             <form method="POST">
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">Username <span class="text-danger">*</span></label>
-                        <input type="text" name="username" class="form-control" required
-                               value="<?= htmlspecialchars($user['username']) ?>">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-person-circle me-2 text-primary"></i>Username <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" name="username" class="form-control py-3 border-2" required
+                            style="border-radius: 12px; border-color: #e2e8f0;"
+                            value="<?= htmlspecialchars($user['username']) ?>">
                     </div>
                     
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">Nomor Telepon</label>
-                        <input type="tel" name="no_telepon" class="form-control"
-                               value="<?= htmlspecialchars($user['no_telepon'] ?? '') ?>"
-                               placeholder="Contoh: 081234567890">
+                        <label class="form-label fw-semibold">
+                            <i class="bi bi-telephone me-2 text-info"></i>Nomor Telepon
+                        </label>
+                        <input type="tel" name="no_telepon" class="form-control py-3 border-2"
+                            style="border-radius: 12px; border-color: #e2e8f0;"
+                            value="<?= htmlspecialchars($user['no_telepon'] ?? '') ?>"
+                            placeholder="Contoh: 081234567890">
                     </div>
                     
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">Role</label>
-                        <input type="text" class="form-control" readonly
-                               value="<?= ucfirst($user['role']) ?>">
+                        <label class="form-label fw-semibold text-muted small">
+                            <i class="bi bi-shield-check me-1"></i>Role
+                        </label>
+                        <div class="p-3 rounded-3 shadow-sm" style="background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%); border-left: 4px solid #667eea;">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                                    <i class="bi bi-person-badge text-primary fs-5"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block" style="cursor: default;   font-size: 0.75rem;">Status Akun</small>
+                                    <strong class="text-dark" style="cursor: default; font-size: 1.1rem;"><?= htmlspecialchars(ucfirst($user['role'])) ?></strong>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    
+
                     <div class="col-md-6 mb-3">
-                        <label class="form-label">Bergabung Sejak</label>
-                        <input type="text" class="form-control" readonly
-                               value="<?= date('d F Y', strtotime($user['created_at'])) ?>">
+                        <label class="form-label fw-semibold text-muted small">
+                            <i class="bi bi-calendar-check me-1"></i>Bergabung Sejak
+                        </label>
+                        <div class="p-3 rounded-3 shadow-sm" style="background: linear-gradient(135deg, #48bb7815 0%, #38a16915 100%); border-left: 4px solid #48bb78;">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-success bg-opacity-10 rounded-circle p-2 me-3">
+                                    <i class="bi bi-clock-history text-success fs-5"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted d-block" style="cursor: default; font-size: 0.75rem;">Tanggal Daftar</small>
+                                    <strong class="text-dark" style="cursor: default; font-size: 1.1rem;"><?= date('d F Y', strtotime($user['created_at'])) ?></strong>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
